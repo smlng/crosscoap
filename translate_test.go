@@ -35,7 +35,7 @@ func TestTranslateCOAPRequestWithoutContentFormat(t *testing.T) {
 	coapMsg.SetOption(coap.URIQuery, []string{"a=b", "c=d e&=f"})
 	coapMsg.Payload = []byte("The request body")
 
-	httpReq := translateCOAPRequestToHTTPRequest(&coapMsg, "http://localhost:9876/backend1")
+	httpReq := translateCOAPRequestToHTTPRequest(&coapMsg, "http://localhost:9876/backend1", "", "")
 	if httpReq.Method != "POST" {
 		t.Errorf("httpReq.Method is '%v'", httpReq.Method)
 	}
@@ -64,7 +64,7 @@ func TestTranslateCOAPRequestWithContentFormat(t *testing.T) {
 	coapMsg.SetPathString("resource")
 	coapMsg.SetOption(coap.ContentFormat, coap.TextPlain)
 
-	httpReq := translateCOAPRequestToHTTPRequest(&coapMsg, "http://localhost:9876/backend2/")
+	httpReq := translateCOAPRequestToHTTPRequest(&coapMsg, "http://localhost:9876/backend2/", "", "")
 	if httpReq.Method != "GET" {
 		t.Errorf("httpReq.Method is '%v'", httpReq.Method)
 	}
@@ -83,7 +83,7 @@ func TestTranslateCOAPRequestWithBadURI(t *testing.T) {
 		MessageID: 1234,
 	}
 	coapMsg.SetPathString("%")
-	httpReq := translateCOAPRequestToHTTPRequest(&coapMsg, "http://localhost:9876/backend2/")
+	httpReq := translateCOAPRequestToHTTPRequest(&coapMsg, "http://localhost:9876/backend2/", "", "")
 	if httpReq != nil {
 		t.Errorf("httpReq is not nil")
 	}

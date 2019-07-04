@@ -61,6 +61,10 @@ type Proxy struct {
 	// proxied.
 	BackendURL string
 
+	Username string
+
+	Password string
+
 	// Timeout for requests to the HTTP backend.  If nil, a default of 5
 	// seconds is used.
 	Timeout *time.Duration
@@ -105,7 +109,7 @@ func (p *proxyHandler) doHTTPRequest(req *http.Request) (*http.Response, []byte,
 func (p *proxyHandler) ServeCOAP(l *net.UDPConn, a *net.UDPAddr, m *coap.Message) *coap.Message {
 	p.logAccess("%v: CoAP %v URI-Path=%v URI-Query=%v", a, m.Code, m.PathString(), m.Options(coap.URIQuery))
 	waitForResponse := m.IsConfirmable()
-	req := translateCOAPRequestToHTTPRequest(m, p.BackendURL)
+	req := translateCOAPRequestToHTTPRequest(m, p.BackendURL, p.Username, p.Password)
 	if req == nil {
 		if waitForResponse {
 			return &generateBadRequestCOAPResponse(m).Message

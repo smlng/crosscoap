@@ -109,7 +109,7 @@ func queryString(coapMsg *coap.Message) string {
 	return "?" + strings.Join(parts, "&")
 }
 
-func translateCOAPRequestToHTTPRequest(coapMsg *coap.Message, backendURLPrefix string) *http.Request {
+func translateCOAPRequestToHTTPRequest(coapMsg *coap.Message, backendURLPrefix string, username string, password string) *http.Request {
 	method := coapMsg.Code.String()
 	url := addFinalSlash(backendURLPrefix) + coapMsg.PathString() + queryString(coapMsg)
 	body := bytes.NewReader(coapMsg.Payload)
@@ -117,7 +117,9 @@ func translateCOAPRequestToHTTPRequest(coapMsg *coap.Message, backendURLPrefix s
 	if err != nil {
 		return nil
 	}
-
+	if (len(username) > 0 && len(password) > 0) {
+		req.SetBasicAuth(username, password)
+	}
 	contentType := getHTTPContentTypeFromCOAPMessage(*coapMsg)
 	if contentType != "" {
 		req.Header.Set("Content-Type", contentType)

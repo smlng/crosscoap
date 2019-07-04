@@ -6,12 +6,14 @@ import (
 	"net"
 	"os"
 
-	"github.com/ibm-security-innovation/crosscoap"
+	"github.com/smlng/crosscoap"
 )
 
 var (
 	listenAddr    = flag.String("listen", "0.0.0.0:5683", "CoAP listen address and port")
 	backendURL    = flag.String("backend", "", "Backend HTTP server URL")
+	username      = flag.String("username", "", "Username for basic authorisation at backend")
+	password      = flag.String("password", "", "Password for basic authorisation at backend")
 	errorLogName  = flag.String("errorlog", "", "Error log file name (default is stderr)")
 	accessLogName = flag.String("accesslog", "", "Access log file name (default is no log)")
 )
@@ -60,6 +62,8 @@ func main() {
 	p := crosscoap.Proxy{
 		Listener:   udpListener,
 		BackendURL: *backendURL,
+		Username:   *username,
+		Password:   *password,
 		ErrorLog:   errorLog,
 		AccessLog:  accessLog,
 	}
